@@ -1,0 +1,47 @@
+---
+version: "2.0"
+services:
+  cs2:
+    image: joedwards32/cs2
+    expose:
+      - port: 27015 # CS2 server listen port udp
+        as: 27015
+        proto: udp
+        to:
+          - global: true
+      - port: 27020 # SourceTV/CSTV port
+        as: 27020
+        to:
+          - global: true
+      - port: 27050 # RCON port
+        as: 27050
+        to:
+          - global: true
+    env:
+      - SRCDS_TOKEN=your_steam_token
+      - CS2_IP=0.0.0.0
+      - CS2_PORT=27015
+      - CS2_LAN=0
+      - CS2_RCON_PORT=27050
+      - CS2_RCONPW=your_rcon_password
+profiles:
+  compute:
+    cs2:
+      resources:
+        cpu:
+          units: 4
+        memory:
+          size: 8Gi
+        storage:
+          - size: 60Gi
+  placement:
+    dcloud:
+      pricing:
+        cs2:
+          denom: uakt
+          amount: 1000
+deployment:
+  cs2:
+    dcloud:
+      profile: cs2
+      count: 1
